@@ -1,10 +1,15 @@
 # Project-Homepage
 A homepage in the making just to showcase my most recent skills (mainly for HR personel).
 
-Update: Had to delete the node modules folder and the .c9 folder in order to not to exceed 100 files. Now everything in the root folder is written by me.
+Update: Had to delete the node modules folder and the .c9 folder in order to not to exceed the 100 files limit. Now everything in the root folder is written by me.
 Original project on cloud9 can be seen here:
 https://ide.c9.io/nosterion/homepage
 
+version 2.0:
+Connected app to mongodb. Integrated mongoose.
+Now created new galleries persist.
+Started to integrate restful routes.
+Only uploaded the files created by me.
 
 version 1.0: 
 The plan is to make a homepage that features my photo gallery using node.js and express.
