@@ -1,6 +1,8 @@
 # Project-Homepage
 A homepage in the making just to showcase my most recent skills (mainly for HR personel).
 
+Update_3: Updated BlogApp folder. Sanitized user input and cleaned up style.
+
 Update_2: Uploaded a folder named BlogApp. It is the barebone of a standalone Blogging page. I will clean up and style things in it then integrate it into the homepage. Functionalities are working but it uses Semantic UI framework, while the homepage project uses Bootstrap.
 
 Update_1: Had to delete the node modules folder and the .c9 folder in order to not to exceed the 100 files limit. Now everything in the root folder is written by me.
