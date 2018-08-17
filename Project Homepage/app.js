@@ -3,44 +3,15 @@
 var express    = require("express"),
     app        = express(),
     bodyParser = require("body-parser"),
-    mongoose   = require("mongoose")
-
+    mongoose   = require("mongoose"),
+    Gallery    = require("./models/gallery"),
+    Comment    = require("./models/comment")
+    
 mongoose.connect("mongodb://localhost:27017/homepage_db", { useNewUrlParser: true });
 app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"));
 
-//****** SCHEMA SETUP ********//
-
-var gallerySchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-
-var Gallery = mongoose.model("Gallery", gallerySchema);
-
-//****** TEMPORARY DATA ******//
-/*
-Gallery.create(
-   {
-       name: "Cartoon style", 
-       image: "https://t00.deviantart.net/iGUh_F8xq1oH-COkpHeSV0IdAfo=/fit-in/500x250/filters:fixed_height(100,100):origin()/pre00/8ed9/th/pre/f/2018/213/1/8/lost_in_the_city___cartoon_version_by_nosterion-dcivqek.jpg"
-   },
-   function(err, gallery){
-        if(err){
-            console.log(err);
-        } else {
-            console.log("NEWLY CREATED GALLERY:");
-            console.log(gallery);
-        }
-    });
-
-var gallery = [
-        {name: "Oil painting style", image: "https://t00.deviantart.net/h71ZQm03YN1_I_csrny9_j8L-Ts=/fit-in/500x250/filters:fixed_height(100,100):origin()/pre00/6062/th/pre/f/2018/206/7/d/countryside_with_cattle_by_nosterion-dci8k4a.jpg"},
-        {name: "Colored pencil style", image: "https://t00.deviantart.net/22VenGfFMJ8LzAMS58xDg3eULhs=/fit-in/500x250/filters:fixed_height(100,100):origin()/pre00/4b06/th/pre/f/2018/206/3/7/church_with_iron_gates_by_nosterion-dci8hhf.jpg"},
-        {name: "Cartoon style", image: "https://t00.deviantart.net/iGUh_F8xq1oH-COkpHeSV0IdAfo=/fit-in/500x250/filters:fixed_height(100,100):origin()/pre00/8ed9/th/pre/f/2018/213/1/8/lost_in_the_city___cartoon_version_by_nosterion-dcivqek.jpg"}
-    ]
-*/
 
 //****** ROUTES ******//
 
@@ -55,7 +26,7 @@ app.get("/gallery", function(req, res){
         if(err){
             console.log(err);
         } else {
-            res.render("gallery", {gallery:allGaleries});
+            res.render("galleries/index", {gallery:allGaleries});
         }
     });
 });
@@ -79,21 +50,56 @@ app.post("/gallery", function(req, res){
 // RESTFUL - NEW
 
 app.get("/gallery/new", function(req, res) {
-    res.render("new.ejs");
+    res.render("galleries/new");
 });
 
 // RESTFUL - SHOW
 
 app.get("/gallery/:id", function(req, res){
-    Gallery.findById(req.params.id, function(err, foundGallery){
+    Gallery.findById(req.params.id).populate("comments").exec(function(err, foundGallery){
         if(err){
             console.log(err);
         } else {
-            res.render("show", {gallery:foundGallery});
+            res.render("galleries/show", {gallery:foundGallery});
         }
     });
 });
 
+
+//****** COMMENTS ROUTES ******//
+
+// RESTFUL - NEW
+
+app.get("/gallery/:id/comments/new", function(req, res){
+    Gallery.findById(req.params.id, function(err, gallery){
+       if(err){
+           console.log(err);
+       } else {
+           res.render("comments/new", {gallery:gallery});
+       }
+    });
+});
+
+// RESTFUL - CREATE
+
+app.post("/galleries/:id/comments", function(req, res){
+    Gallery.findById(req.params.id, function(err, gallery){
+        if(err) {
+            console.log(err);
+            res.redirect("/gallery");
+        } else {
+            Comment.create(req.body.comment, function(err, comment){
+               if(err) {
+                   console.log(err);
+               } else {
+                   gallery.comments.push(comment);
+                   gallery.save();
+                   res.redirect("/gallery/" + gallery._id);
+               }
+            });
+        }
+    });
+});
 
 //****** SERVER LISTENING ******//
 
