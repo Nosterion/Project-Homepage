@@ -9,6 +9,10 @@ Update_1: Had to delete the node modules folder and the .c9 folder in order to n
 Original project on cloud9 can be seen here:
 https://ide.c9.io/nosterion/homepage
 
+version 3.0:
+Added comments option on galleries. Comments persist too.
+Added some basic styling to showpage using Bootstrap. 
+
 version 2.0:
 Connected app to mongodb. Integrated mongoose.
 Now created new galleries persist.
